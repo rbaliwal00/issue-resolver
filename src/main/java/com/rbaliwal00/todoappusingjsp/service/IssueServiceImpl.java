@@ -3,6 +3,7 @@ package com.rbaliwal00.todoappusingjsp.service;
 import com.rbaliwal00.todoappusingjsp.dto.IssueDto;
 import com.rbaliwal00.todoappusingjsp.model.Issue;
 import com.rbaliwal00.todoappusingjsp.model.User;
+import com.rbaliwal00.todoappusingjsp.repository.CommentRepository;
 import com.rbaliwal00.todoappusingjsp.repository.IssueRepository;
 import com.rbaliwal00.todoappusingjsp.repository.UserRepository;
 import org.modelmapper.ModelMapper;
@@ -18,30 +19,15 @@ public class IssueServiceImpl implements IssueService {
     private final IssueRepository issueRepository;
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
-    private final UserService userService;
 
-    public IssueServiceImpl(IssueRepository issueRepository, ModelMapper modelMapper, UserRepository userRepository, UserService userService) {
+    public IssueServiceImpl(IssueRepository issueRepository, ModelMapper modelMapper, UserRepository userRepository, UserService userService, CommentService commentService, CommentRepository commentRepository) {
         this.issueRepository = issueRepository;
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
-        this.userService = userService;
     }
 
     @Override
     public List<IssueDto> findByUser(Long userId) throws Exception {
-//        try{
-//            User user = userRepository.findById(userId).orElseThrow(() -> new Exception());
-//
-//            issues = issueRepository.findByUser(user);
-//            result = issues.stream().map((issue)-> modelMapper.map(issue, IssueDto.class));
-////                    .stream().map(
-////                            issue -> new IssueDto(issue.getId(), issue.getTitle(), issue.getDescription(), issue.getDateCreated(), issue.isOpen(), userService.convertEntityToDto(issue.getUser()), issue.getComments()))
-////                    .collect(Collectors.toList());
-//
-//
-//        }catch (Exception ex){
-//            System.out.println(ex);
-//        }
         User user = userRepository.findById(userId).orElseThrow(() -> new Exception());
         List<Issue> issues = issueRepository.findByUser(user);
         List<IssueDto> result = issues.stream().map((issue)-> modelMapper.map(issue, IssueDto.class)).collect(Collectors.toList());

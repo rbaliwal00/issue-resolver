@@ -1,5 +1,6 @@
 package com.rbaliwal00.todoappusingjsp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class Comment {
     @ManyToOne
     private User user;
 
+    @JsonIgnore
     @ManyToOne
     private Issue issue;
 

@@ -1,5 +1,6 @@
 package com.rbaliwal00.todoappusingjsp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,10 +26,9 @@ public class Issue {
     private LocalDate dateCreated;
     private boolean isOpen;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne
     private User user;
 
-    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
-    private Set<Comment> comments = new HashSet<>();
+//    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
+//    private Set<Comment> comments = new HashSet<>();
 }

@@ -1,5 +1,6 @@
 package com.rbaliwal00.todoappusingjsp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -17,6 +18,7 @@ import java.util.*;
 @Builder
 @Entity
 @Table(name="user", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@JsonIgnoreProperties({"comments"})
 public class User implements UserDetails {
 
     @Id

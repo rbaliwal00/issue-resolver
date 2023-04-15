@@ -49,7 +49,7 @@ public class SecurityConfiguration {
                 .disable()
                 .authorizeHttpRequests()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers("/","/api/v1/auth/**","/issues/**")
+                .requestMatchers("/","/api/v1/auth/**","/issues/**", "/comments/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()
