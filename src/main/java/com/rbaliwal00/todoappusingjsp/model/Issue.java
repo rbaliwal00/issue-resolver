@@ -29,6 +29,12 @@ public class Issue {
     @ManyToOne
     private User user;
 
-//    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
-//    private Set<Comment> comments = new HashSet<>();
+    @OneToMany(mappedBy = "issue", cascade = CascadeType.ALL)
+    private List<Comment> comments = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<User> voters = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    private List<User> assignees = new ArrayList<>();
 }

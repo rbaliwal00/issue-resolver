@@ -6,16 +6,17 @@ import com.rbaliwal00.todoappusingjsp.dto.UserDto;
 import com.rbaliwal00.todoappusingjsp.model.Role;
 import com.rbaliwal00.todoappusingjsp.model.User;
 import com.rbaliwal00.todoappusingjsp.repository.UserRepository;
-import lombok.NoArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
+import java.util.List;
+import static com.rbaliwal00.todoappusingjsp.model.Role.EXPERT;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -84,5 +85,15 @@ public class UserServiceImpl implements UserService {
         return userDto;
     }
 
-
+    @Override
+    public List<UserDto> getAllExperts() {
+        List<User> allUsers = userRepository.findAll();
+        List<UserDto> usersWithRole = new ArrayList<>();
+        for (User user : allUsers) {
+            if (user.getRole().equals(EXPERT)) {
+                usersWithRole.add(modelMapper.map(user, UserDto.class));
+            }
+        }
+        return usersWithRole;
+    }
 }

@@ -1,10 +1,13 @@
 package com.rbaliwal00.todoappusingjsp.dto;
 
 import com.rbaliwal00.todoappusingjsp.model.Comment;
+import com.rbaliwal00.todoappusingjsp.model.User;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -20,6 +23,7 @@ public class IssueDto {
     private LocalDate dateCreated;
     private boolean isOpen;
     private UserDto user;
-
-    private Set<CommentDto> comments = new HashSet<>();
+    private List<CommentDto> comments = new ArrayList<>();
+    private List<UserDto> assignees = new ArrayList<>();
+    private List<UserDto> votes = new ArrayList<>();
 }

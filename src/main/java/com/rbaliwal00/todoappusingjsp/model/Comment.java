@@ -22,9 +22,9 @@ public class Comment {
     @ManyToOne
     private User user;
 
-    @JsonIgnore
     @ManyToOne
+    @JoinColumn(name = "issue_id")
     private Issue issue;
 
-//    private LocalDate dateCreated;
+    private LocalDate dateCreated;
 }

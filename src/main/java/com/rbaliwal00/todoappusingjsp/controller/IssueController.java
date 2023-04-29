@@ -1,10 +1,17 @@
 package com.rbaliwal00.todoappusingjsp.controller;
 
 import com.rbaliwal00.todoappusingjsp.dto.IssueDto;
-import com.rbaliwal00.todoappusingjsp.model.Comment;
+import com.rbaliwal00.todoappusingjsp.dto.IssueResponse;
+import com.rbaliwal00.todoappusingjsp.dto.UserDto;
+import com.rbaliwal00.todoappusingjsp.model.Issue;
+import com.rbaliwal00.todoappusingjsp.model.User;
+import com.rbaliwal00.todoappusingjsp.repository.UserRepository;
 import com.rbaliwal00.todoappusingjsp.service.CommentService;
 import com.rbaliwal00.todoappusingjsp.service.IssueService;
+import com.rbaliwal00.todoappusingjsp.service.UserService;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,11 +20,11 @@ import java.util.List;
 public class IssueController {
 
     private final IssueService issueService;
-    private final CommentService commentService;
+    private final UserService userService;
 
-    public IssueController(IssueService issueService, CommentService commentService) {
+    public IssueController(IssueService issueService, CommentService commentService, UserService userService, UserRepository userRepository, ModelMapper modelMapper) {
         this.issueService = issueService;
-        this.commentService = commentService;
+        this.userService = userService;
     }
 
     @RequestMapping(value = "/users/{userId}/issues",method = RequestMethod.GET)
@@ -26,8 +33,10 @@ public class IssueController {
     }
 
     @RequestMapping(value = "/issues",method = RequestMethod.GET)
-    public List<IssueDto> listAllIssues(){
-        return issueService.findAll();
+    public IssueResponse listAllIssues(
+            @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize){
+        return issueService.findAll(pageNumber, pageSize);
     }
 
     @RequestMapping(value = "/users/{userId}/issues/{id}",method = RequestMethod.GET)
@@ -55,4 +64,32 @@ public class IssueController {
                            @RequestBody IssueDto issueDto) throws Exception {
         issueService.addIssue(userId, issueDto);
     }
+
+    @GetMapping("/experts")
+    public List<UserDto> getAllExperts(){
+        return userService.getAllExperts();
+    }
+
+    @PostMapping( "/upvote/user/{userId}/issues/{issueId}")
+    public void upvote(@PathVariable Long issueId,
+                       @PathVariable Long userId) throws Exception {
+        issueService.upvote(issueId, userId);
+    }
+
+    @PostMapping( "/users/{email}/issues/{issueId}/assignee")
+    public IssueDto assignIssue(@PathVariable Long issueId,
+                            @PathVariable String email) throws Exception {
+        return issueService.assignIssue(issueId, email);
+    }
+
+    @GetMapping("/issues/home_issues")
+    public List<IssueDto> getHomeIssues() throws Exception {
+        return issueService.getHomeIssues();
+    }
+
+    @GetMapping("/users/{userId}/issues/assigned_issues")
+    public List<IssueDto> getAssignedIssues( @PathVariable Long userId) throws Exception {
+        return issueService.getAssignedIssues(userId);
+    }
+
 }

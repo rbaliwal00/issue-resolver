@@ -49,6 +49,12 @@ public class User implements UserDetails {
             cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
+    @ManyToMany(mappedBy = "assignees")
+    private Set<Issue> issues = new HashSet<>();
+
+    @ManyToMany(mappedBy = "voters")
+    private Set<Issue> votedIssues = new HashSet<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

@@ -1,7 +1,17 @@
 package com.rbaliwal00.todoappusingjsp.model;
 
 public enum Role {
-    CUSTOMER,
-    EXPERT,
-    ADMIN
+    CUSTOMER("CUSTOMER"),
+    EXPERT("EXPERT"),
+    ADMIN("ADMIN");
+
+    private String role;
+
+    Role(String role) {
+        this.role = role;
+    }
+
+    public String getRoleName() {
+        return role;
+    }
 }

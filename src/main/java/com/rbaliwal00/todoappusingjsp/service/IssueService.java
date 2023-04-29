@@ -1,6 +1,7 @@
 package com.rbaliwal00.todoappusingjsp.service;
 
 import com.rbaliwal00.todoappusingjsp.dto.IssueDto;
+import com.rbaliwal00.todoappusingjsp.dto.IssueResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -12,6 +13,14 @@ public interface IssueService {
     ResponseEntity<Void> deleteById(Long userId, Long id) throws Exception;
     void updateIssue(Long userId, IssueDto dto) throws Exception;
 
-    List<IssueDto> findAll();
+    IssueResponse findAll(Integer pageNumber, Integer pageSize);
     IssueDto findById(Long id) throws Exception;
+
+    IssueDto assignIssue(Long issueId, String userEmail);
+
+    void upvote(Long issueId, Long userId);
+
+    List<IssueDto> getHomeIssues() throws Exception;
+
+    List<IssueDto> getAssignedIssues(Long userId) throws Exception;
 }

@@ -31,12 +31,6 @@ public class CustomizedResponseEntityExceptionHandle extends ResponseEntityExcep
         return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.NOT_FOUND);
     }
 
-//    @ExceptionHandler(IllegalArgumentException.class)
-//    public final ResponseEntity<ErrorDetails> handleInvalidInputException(Exception ex, WebRequest request) throws Exception {
-//        ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now().toString(),ex.getMessage(),request.getDescription(false));
-//        return new ResponseEntity<ErrorDetails>(errorDetails, HttpStatus.BAD_REQUEST);
-//    }
-
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now().toString()," " + ex.getFieldError().getField() + " " + ex.getFieldError().getDefaultMessage(), request.getDescription(false));
