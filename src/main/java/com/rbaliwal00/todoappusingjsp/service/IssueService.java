@@ -12,15 +12,11 @@ public interface IssueService {
     void addIssue(Long userId, IssueDto dto) throws Exception;
     ResponseEntity<Void> deleteById(Long userId, Long id) throws Exception;
     void updateIssue(Long userId, IssueDto dto) throws Exception;
-
-    IssueResponse findAll(Integer pageNumber, Integer pageSize);
+    IssueResponse findAll(Integer pageNumber, Integer pageSize, String keyword);
     IssueDto findById(Long id) throws Exception;
-
     IssueDto assignIssue(Long issueId, String userEmail);
-
+    IssueDto closeIssue(Long issueId);
     void upvote(Long issueId, Long userId);
-
     List<IssueDto> getHomeIssues() throws Exception;
-
     List<IssueDto> getAssignedIssues(Long userId) throws Exception;
 }

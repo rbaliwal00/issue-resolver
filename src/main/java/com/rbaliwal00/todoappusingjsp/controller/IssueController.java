@@ -22,7 +22,7 @@ public class IssueController {
     private final IssueService issueService;
     private final UserService userService;
 
-    public IssueController(IssueService issueService, CommentService commentService, UserService userService, UserRepository userRepository, ModelMapper modelMapper) {
+    public IssueController(IssueService issueService, UserService userService) {
         this.issueService = issueService;
         this.userService = userService;
     }
@@ -35,8 +35,9 @@ public class IssueController {
     @RequestMapping(value = "/issues",method = RequestMethod.GET)
     public IssueResponse listAllIssues(
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
-            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize){
-        return issueService.findAll(pageNumber, pageSize);
+            @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
+            @RequestParam(value = "keyword", defaultValue = "", required = false) String keyword){
+        return issueService.findAll(pageNumber, pageSize, keyword);
     }
 
     @RequestMapping(value = "/users/{userId}/issues/{id}",method = RequestMethod.GET)
@@ -80,6 +81,11 @@ public class IssueController {
     public IssueDto assignIssue(@PathVariable Long issueId,
                             @PathVariable String email) throws Exception {
         return issueService.assignIssue(issueId, email);
+    }
+
+    @PostMapping( "/users/issues/{issueId}/close_issue")
+    public IssueDto closingIssue(@PathVariable Long issueId) throws Exception {
+        return issueService.closeIssue(issueId);
     }
 
     @GetMapping("/issues/home_issues")

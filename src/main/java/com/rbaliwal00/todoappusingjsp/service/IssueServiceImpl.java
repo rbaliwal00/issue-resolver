@@ -114,6 +114,14 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
+    public IssueDto closeIssue(Long issueId) {
+        Issue issue = issueRepository.findById(issueId).orElseThrow();
+        issue.setOpen(false);
+        issueRepository.save(issue);
+        return issueToIssueDto(issue);
+    }
+
+    @Override
     public void upvote(Long issueId, Long userId) {
         Issue issue = issueRepository.findById(issueId).orElseThrow();
         User user = userRepository.findById(userId).orElseThrow();
@@ -167,6 +175,7 @@ public class IssueServiceImpl implements IssueService {
         Issue issue = modelMapper.map(dto, Issue.class);
         issue.setUser(user);
         issue.setDateCreated(LocalDate.now());
+        issue.setOpen(true);
         issueRepository.save(issue);
     }
 
@@ -193,11 +202,11 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public IssueResponse findAll(Integer pageNumber, Integer pageSize) {
+    public IssueResponse findAll(Integer pageNumber, Integer pageSize, String keyword) {
 
         Pageable p = PageRequest.of(pageNumber, pageSize);
 
-        Page<Issue> pageIssue = issueRepository.findAll(p);
+        Page<Issue> pageIssue = issueRepository.findByTitleContaining(keyword,p);
         List<Issue> content = pageIssue.getContent();
         List<IssueDto> list = new ArrayList<>();
         for(Issue i: content){

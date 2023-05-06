@@ -1,11 +1,11 @@
 package com.rbaliwal00.todoappusingjsp.controller;
 
 import com.rbaliwal00.todoappusingjsp.dto.CommentDto;
+import com.rbaliwal00.todoappusingjsp.dto.CommentResponse;
 import com.rbaliwal00.todoappusingjsp.model.Comment;
 import com.rbaliwal00.todoappusingjsp.model.User;
 import com.rbaliwal00.todoappusingjsp.repository.CommentRepository;
 import com.rbaliwal00.todoappusingjsp.service.CommentService;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,11 +28,17 @@ public class CommentController {
     public List<Comment> getAllCommentsForIssue() {
         return commentRepository.findAll();
     }
-//
-    @PostMapping( "/users/issues/{issueId}/comment")
-    public ResponseEntity<CommentDto> addCommentToIssue(@AuthenticationPrincipal User user, @PathVariable Long issueId,
+
+    @GetMapping( "/comments/paged/{issueId}")
+    public CommentResponse getAllPagedCommentsForIssue(@PathVariable Long issueId, @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
+                                                       @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize) {
+        return commentService.getPaginatedCommentsByIssueId(issueId,pageNumber, pageSize);
+    }
+
+    @PostMapping( "/users/{userId}/issues/{issueId}/comment")
+    public ResponseEntity<CommentDto> addCommentToIssue(@PathVariable Long userId, @PathVariable Long issueId,
                                                         @RequestBody CommentDto comment) throws Exception {
-        CommentDto commentCreated = commentService.addComment(user, issueId, comment);
+        CommentDto commentCreated = commentService.addComment(userId, issueId, comment);
         return new ResponseEntity<CommentDto>(commentCreated, HttpStatus.CREATED);
     }
 
