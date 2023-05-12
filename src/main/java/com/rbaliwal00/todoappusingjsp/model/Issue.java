@@ -37,4 +37,9 @@ public class Issue {
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<User> assignees = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "community_id")
+    private Community community;
+
 }

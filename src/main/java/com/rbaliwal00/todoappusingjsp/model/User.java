@@ -55,6 +55,15 @@ public class User implements UserDetails {
     @ManyToMany(mappedBy = "voters")
     private Set<Issue> votedIssues = new HashSet<>();
 
+    @ManyToMany(mappedBy = "members")
+    private Set<Community> communities = new HashSet<>();
+
+    @ManyToMany(mappedBy = "requestingMembers")
+    private Set<Community> requestedCommunities = new HashSet<>();
+
+    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
+    private Set<Community> communitiesCreated = new HashSet<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));

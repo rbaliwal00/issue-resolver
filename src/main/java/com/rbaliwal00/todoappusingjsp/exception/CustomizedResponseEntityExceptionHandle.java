@@ -1,5 +1,6 @@
 package com.rbaliwal00.todoappusingjsp.exception;
 
+import com.rbaliwal00.todoappusingjsp.dto.ApiResponse;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,13 @@ import java.util.List;
 
 @ControllerAdvice
 public class CustomizedResponseEntityExceptionHandle extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse> resourceNotFoundException(ResourceNotFoundException ex){
+        String message = ex.getMessage();
+        ApiResponse apiResponse = new ApiResponse(message, false);
+        return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ErrorDetails> handleAllException(Exception ex, WebRequest request) throws Exception {

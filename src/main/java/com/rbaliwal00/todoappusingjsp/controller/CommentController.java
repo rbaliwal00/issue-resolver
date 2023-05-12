@@ -3,7 +3,6 @@ package com.rbaliwal00.todoappusingjsp.controller;
 import com.rbaliwal00.todoappusingjsp.dto.CommentDto;
 import com.rbaliwal00.todoappusingjsp.dto.CommentResponse;
 import com.rbaliwal00.todoappusingjsp.model.Comment;
-import com.rbaliwal00.todoappusingjsp.model.User;
 import com.rbaliwal00.todoappusingjsp.repository.CommentRepository;
 import com.rbaliwal00.todoappusingjsp.service.CommentService;
 import org.springframework.http.HttpStatus;
