@@ -4,6 +4,7 @@ import com.rbaliwal00.todoappusingjsp.dto.CommentDto;
 import com.rbaliwal00.todoappusingjsp.dto.IssueDto;
 import com.rbaliwal00.todoappusingjsp.dto.IssueResponse;
 import com.rbaliwal00.todoappusingjsp.dto.UserDto;
+import com.rbaliwal00.todoappusingjsp.exception.ResourceNotFoundException;
 import com.rbaliwal00.todoappusingjsp.model.Comment;
 import com.rbaliwal00.todoappusingjsp.model.Issue;
 import com.rbaliwal00.todoappusingjsp.model.User;
@@ -31,6 +32,16 @@ public class IssueServiceImpl implements IssueService {
         this.issueRepository = issueRepository;
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
+    }
+
+    public Issue issueDtoToIssue(IssueDto dto){
+        Issue issue = issueRepository.
+                findById(dto.getId()).
+                orElseThrow(() -> new ResourceNotFoundException("Issue", " Id ", dto.getId()));
+        issue.setTitle(dto.getTitle());
+        issue.setDescription(dto.getDescription());
+        Issue save = issueRepository.save(issue);
+        return save;
     }
 
     public IssueDto issueToIssueDto(Issue issue){
@@ -172,8 +183,10 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public void addIssue(Long userId, IssueDto dto) throws Exception {
         User user = userRepository.findById(userId).orElseThrow(() -> new Exception());
-        Issue issue = modelMapper.map(dto, Issue.class);
+        Issue issue = new Issue();
         issue.setUser(user);
+        issue.setTitle(dto.getTitle());
+        issue.setDescription(dto.getDescription());
         issue.setDateCreated(LocalDate.now());
         issue.setOpen(true);
         issueRepository.save(issue);
@@ -195,10 +208,11 @@ public class IssueServiceImpl implements IssueService {
         if(dto==null){
             throw new NoSuchElementException();
         }
-        deleteById(userId, dto.getId());
-        Issue issue = modelMapper.map(dto, Issue.class);
-        issue.setUser(user);
+        Issue issue = issueRepository.findById(dto.getId()).orElseThrow();
+        issue.setTitle(dto.getTitle());
+        issue.setDescription(dto.getDescription());
         issueRepository.save(issue);
+//        deleteById(userId, issue.getId());
     }
 
     @Override

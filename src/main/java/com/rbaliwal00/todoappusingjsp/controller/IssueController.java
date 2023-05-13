@@ -56,7 +56,7 @@ public class IssueController {
     }
 
     @PutMapping( "/users/{userId}/issues")
-    public void updateTodo(@PathVariable Long userId, @RequestBody IssueDto issueDto) throws Exception {
+    public void updateIssue(@PathVariable Long userId, @RequestBody IssueDto issueDto) throws Exception {
         issueService.updateIssue(userId, issueDto);
     }
 
