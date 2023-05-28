@@ -3,20 +3,16 @@ package com.rbaliwal00.todoappusingjsp.controller;
 import com.rbaliwal00.todoappusingjsp.dto.IssueDto;
 import com.rbaliwal00.todoappusingjsp.dto.IssueResponse;
 import com.rbaliwal00.todoappusingjsp.dto.UserDto;
-import com.rbaliwal00.todoappusingjsp.model.Issue;
-import com.rbaliwal00.todoappusingjsp.model.User;
-import com.rbaliwal00.todoappusingjsp.repository.UserRepository;
-import com.rbaliwal00.todoappusingjsp.service.CommentService;
 import com.rbaliwal00.todoappusingjsp.service.IssueService;
 import com.rbaliwal00.todoappusingjsp.service.UserService;
-import org.modelmapper.ModelMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@Slf4j
 public class IssueController {
 
     private final IssueService issueService;
@@ -37,7 +33,9 @@ public class IssueController {
             @RequestParam(value = "pageNumber", defaultValue = "0", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5", required = false) Integer pageSize,
             @RequestParam(value = "keyword", defaultValue = "", required = false) String keyword){
-        return issueService.findAll(pageNumber, pageSize, keyword);
+
+        IssueResponse all = issueService.findAll(pageNumber, pageSize, keyword);
+        return all;
     }
 
     @RequestMapping(value = "/users/{userId}/issues/{id}",method = RequestMethod.GET)
@@ -74,7 +72,9 @@ public class IssueController {
     @PostMapping( "/upvote/user/{userId}/issues/{issueId}")
     public void upvote(@PathVariable Long issueId,
                        @PathVariable Long userId) throws Exception {
-        issueService.upvote(issueId, userId);
+
+        IssueDto upvote = issueService.upvote(issueId, userId);
+        log.info(upvote.toString());
     }
 
     @PostMapping( "/users/{email}/issues/{issueId}/assignee")
@@ -97,5 +97,10 @@ public class IssueController {
     public List<IssueDto> getAssignedIssues( @PathVariable Long userId) throws Exception {
         return issueService.getAssignedIssues(userId);
     }
+//
+//    @GetMapping("/issues/find/{id}")
+//    public UserDto findUserById(@PathVariable Long id){
+//        return userService.findUserByUserId(id);
+//    }
 
 }

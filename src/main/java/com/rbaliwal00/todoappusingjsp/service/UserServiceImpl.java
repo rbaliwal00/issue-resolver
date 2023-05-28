@@ -3,9 +3,11 @@ package com.rbaliwal00.todoappusingjsp.service;
 
 import com.rbaliwal00.todoappusingjsp.dto.AuthenticationRequest;
 import com.rbaliwal00.todoappusingjsp.dto.UserDto;
+import com.rbaliwal00.todoappusingjsp.exception.ResourceNotFoundException;
 import com.rbaliwal00.todoappusingjsp.model.Role;
 import com.rbaliwal00.todoappusingjsp.model.User;
 import com.rbaliwal00.todoappusingjsp.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -19,6 +21,7 @@ import java.util.List;
 import static com.rbaliwal00.todoappusingjsp.model.Role.EXPERT;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -69,6 +72,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto authenticate(AuthenticationRequest request) {
+        System.out.println(request.getPassword());
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -95,5 +99,12 @@ public class UserServiceImpl implements UserService {
             }
         }
         return usersWithRole;
+    }
+
+    @Override
+    public UserDto findUserByUserId(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "Id", id));
+        UserDto map = modelMapper.map(user, UserDto.class);
+        return map;
     }
 }

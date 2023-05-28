@@ -9,7 +9,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@Data
 @Builder
 public class CommunityDto {
     private Long id;

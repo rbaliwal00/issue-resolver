@@ -13,13 +13,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.*;
 
 @AllArgsConstructor
-@NoArgsConstructor
-@Data
-@Builder
+@Getter
+@Setter
 @Entity
+@NoArgsConstructor
+@Builder
 @Table(name="user", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 @JsonIgnoreProperties({"comments"})
-public class User implements UserDetails {
+public class User extends BaseEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -45,28 +46,33 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user",
-            cascade = CascadeType.ALL)
-    private Set<Comment> comments = new HashSet<>();
+//    @OneToMany(mappedBy = "user",
+//            cascade = CascadeType.ALL)
+//    private Set<Comment> comments = new HashSet<>();
 
-    @ManyToMany(mappedBy = "assignees")
-    private Set<Issue> issues = new HashSet<>();
+    @ManyToMany(mappedBy = "assignees", fetch = FetchType.LAZY)
+    private List<Issue> issues = new ArrayList<>();
 
     @ManyToMany(mappedBy = "voters")
-    private Set<Issue> votedIssues = new HashSet<>();
+    private List<Issue> votedIssues = new ArrayList<>();
 
     @ManyToMany(mappedBy = "members")
-    private Set<Community> communities = new HashSet<>();
+    private List<Community> communities = new ArrayList<>();
 
     @ManyToMany(mappedBy = "requestingMembers")
-    private Set<Community> requestedCommunities = new HashSet<>();
+    private List<Community> requestedCommunities = new ArrayList<>();
 
     @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
-    private Set<Community> communitiesCreated = new HashSet<>();
+    private List<Community> communitiesCreated = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
     }
 
     @Override
@@ -92,5 +98,16 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", role=" + role +
+                '}';
     }
 }

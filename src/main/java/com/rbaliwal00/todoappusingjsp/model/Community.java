@@ -2,9 +2,7 @@ package com.rbaliwal00.todoappusingjsp.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,11 +10,12 @@ import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @NoArgsConstructor
 @Table(name="community")
-public class Community {
+public class Community extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -26,7 +25,7 @@ public class Community {
     private String description;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    private Set<User> members = new HashSet<>();
+    private List<User> members = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.ALL)
     private List<User> requestingMembers = new ArrayList<>();
@@ -35,6 +34,15 @@ public class Community {
     @JoinColumn(name = "user_id")
     private User admin;
 
-    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
-    private Set<Issue> issues = new HashSet<>();
+//    @OneToMany(mappedBy = "community", cascade = CascadeType.ALL)
+//    private List<Issue> issues = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Community{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

@@ -16,7 +16,7 @@ public interface IssueService {
     IssueDto findById(Long id) throws Exception;
     IssueDto assignIssue(Long issueId, String userEmail);
     IssueDto closeIssue(Long issueId);
-    void upvote(Long issueId, Long userId);
+    IssueDto upvote(Long issueId, Long userId);
     List<IssueDto> getHomeIssues() throws Exception;
     List<IssueDto> getAssignedIssues(Long userId) throws Exception;
 }

@@ -5,12 +5,11 @@ import com.rbaliwal00.todoappusingjsp.dto.IssueDto;
 import com.rbaliwal00.todoappusingjsp.dto.IssueResponse;
 import com.rbaliwal00.todoappusingjsp.dto.UserDto;
 import com.rbaliwal00.todoappusingjsp.exception.ResourceNotFoundException;
-import com.rbaliwal00.todoappusingjsp.model.Comment;
-import com.rbaliwal00.todoappusingjsp.model.Issue;
-import com.rbaliwal00.todoappusingjsp.model.User;
+import com.rbaliwal00.todoappusingjsp.model.*;
 import com.rbaliwal00.todoappusingjsp.repository.CommentRepository;
 import com.rbaliwal00.todoappusingjsp.repository.IssueRepository;
 import com.rbaliwal00.todoappusingjsp.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class IssueServiceImpl implements IssueService {
     private final IssueRepository issueRepository;
     private final ModelMapper modelMapper;
@@ -133,7 +133,7 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public void upvote(Long issueId, Long userId) {
+    public IssueDto upvote(Long issueId, Long userId) {
         Issue issue = issueRepository.findById(issueId).orElseThrow();
         User user = userRepository.findById(userId).orElseThrow();
         if(issue.getVoters().contains(user)){
@@ -141,38 +141,50 @@ public class IssueServiceImpl implements IssueService {
         }else{
             issue.getVoters().add(user);
         }
-        issueRepository.save(issue);
+        Issue save = issueRepository.save(issue);
+
+        return issueToIssueDto(save);
+
     }
 
     @Override
     public List<IssueDto> getHomeIssues() throws Exception {
-        List<Issue> all = issueRepository.findAll();
-
-        List<IssueDto> result = new ArrayList<>();
-        for(int i = 0; i < 3; i++){
-            int max = -1;
-            Issue issue = all.get(0);
-            for(Issue issue1: all){
-                if(max == issue1.getVoters().size()){
-                    if(issue.getComments().size() < issue1.getComments().size()){
-                        issue = issue1;
-                    }
-                }
-                else if(max < issue1.getVoters().size()) {
-                    max = issue1.getVoters().size();
-                    issue = issue1;
-                }
+        List<Issue> all = issueRepository.findAllSortedByLikesAndComments();
+//        Map<Integer, Integer> map = new HashMap<>();
+//        List<IssueDto> result = new ArrayList<>();
+//        for(int i = 0; i < 3; i++){
+//            int max = -1;
+//            Issue issue = all.get(0);
+//            for(Issue issue1: all){
+//                if(max == issue1.getVoters().size()){
+//                    if(issue.getComments().size() < issue1.getComments().size()){
+//                        issue = issue1;
+//                    }
+//                }
+//                else if(max < issue1.getVoters().size()) {
+//                    max = issue1.getVoters().size();
+//                    issue = issue1;
+//                }
+//            }
+//            all.remove(issue);
+//            result.add(findById(issue.getId()));
+//        }
+        List<IssueDto> issueDtos = new ArrayList<>();
+        int count = 0;
+        for(Issue i : all){
+            if(count > 2){
+                break;
             }
-            all.remove(issue);
-            result.add(findById(issue.getId()));
+            count++;
+            issueDtos.add(issueToIssueDto(i));
         }
-        return result;
+        return issueDtos;
     }
 
     @Override
     public List<IssueDto> getAssignedIssues(Long userId) throws Exception {
         User user = userRepository.findById(userId).orElseThrow();
-        Set<Issue> issues = user.getIssues();
+        List<Issue> issues = user.getIssues();
         List<IssueDto> assignedIssues = new ArrayList<>();
         for(Issue i: issues){
             assignedIssues.add(issueToIssueDto(i));
@@ -222,10 +234,14 @@ public class IssueServiceImpl implements IssueService {
 
         Page<Issue> pageIssue = issueRepository.findByTitleContaining(keyword,p);
         List<Issue> content = pageIssue.getContent();
-        List<IssueDto> list = new ArrayList<>();
-        for(Issue i: content){
-            list.add(modelMapper.map(i, IssueDto.class));
-        }
+        List<IssueDto> list = content.stream().map(issue ->
+            IssueDto.builder()
+                    .id(issue.getId())
+                    .title(issue.getTitle())
+                    .username(issue.getUser().getEmail())
+                    .dateCreated(issue.getDateCreated())
+                    .build()
+        ).collect(Collectors.toList());
 
         IssueResponse issueResponse = new IssueResponse();
         issueResponse.setContent(list);

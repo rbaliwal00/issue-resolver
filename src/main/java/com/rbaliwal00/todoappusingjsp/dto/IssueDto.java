@@ -12,7 +12,6 @@ import java.util.Set;
 
 @Getter
 @Setter
-@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,7 +22,9 @@ public class IssueDto {
     private LocalDate dateCreated;
     private boolean isOpen;
     private UserDto user;
+    private String username;
     private List<CommentDto> comments = new ArrayList<>();
     private List<UserDto> assignees = new ArrayList<>();
     private List<UserDto> votes = new ArrayList<>();
+
 }

@@ -9,7 +9,6 @@ import lombok.*;
 @Getter
 @Setter
 @NoArgsConstructor
-@Data
 @Builder
 public class UserDto {
     private Long id;

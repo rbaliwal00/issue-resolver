@@ -15,4 +15,6 @@ public interface UserService {
     UserDto authenticate(AuthenticationRequest request);
 
     List<UserDto> getAllExperts();
+
+    UserDto findUserByUserId(Long id);
 }
